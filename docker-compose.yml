@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  builder:
+    image: crx-builder:latest
+    build:
+      dockerfile: ./Dockerfile
+      context: ./node-crx-builder
+    tty: true
+    networks:
+      selenium_net:
+        ipv4_address: 10.0.0.100
+    depends_on:
+      selenium:
+        condition: service_healthy
+
+  selenium:
+    image: selenium/standalone-chrome:4.0.0-20211025
+    tty: true
+    expose:
+      - "4444"
+      - "7900"
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    volumes:
+      - ./selenium-server/extensions:/tmp/extensions
+    networks:
+      selenium_net:
+        ipv4_address: 10.0.0.101
+    healthcheck:
+      test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  selenium_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24

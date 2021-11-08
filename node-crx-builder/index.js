@@ -25,6 +25,7 @@ const {Builder, By, Key, until} = require('selenium-webdriver');
         })), 1000);
         await driver.manage().setTimeouts( { implicit: 1000 } );
 
+        await driver.sleep(1000);
         console.log('Opening packing menu...');
         const packBtn = await driver.executeScript(_getPackBtn);
         await packBtn.click();
@@ -41,16 +42,9 @@ const {Builder, By, Key, until} = require('selenium-webdriver');
         console.log('Packaging...');
         const packActionBtn = await driver.executeScript(_getPackActionBtn);
         await packActionBtn.click();
+        await driver.sleep(1000);
         console.log('Packaging finished successfully!');
         // @TODO wait until "Pack extension" dialog title is visible
-
-        // await driver.findElement(By.id('devMode')).click();
-        // Enter text "cheese" and perform keyboard action "Enter"
-        // await driver.findElement(By.name('q')).sendKeys('cheese', Key.ENTER);
-
-        // let firstResult = await driver.wait(until.elementLocated(By.css('h3')), 10000);
-
-        // console.log(await firstResult.getAttribute('textContent'));
     } catch (e) {
         console.log('Could not build crx', e);
     } finally{
